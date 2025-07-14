@@ -4,7 +4,7 @@ import sys
 
 if len(sys.argv) != 2:
     print(f"Usage: python {sys.argv[0]} <domain>")
-    print(f"Example: python {sys.argv[0]} https://louranhospital.com")
+    print(f"Example: python {sys.argv[0]} https://example.com")
     sys.exit(1)
 
 domain = sys.argv[1].rstrip("/")
