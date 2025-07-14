@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://louranhospital.com/?author=2"
+url = "https://example.com/?author=2"
 
 headers = {
-    "Host": "louranhospital.com",
+    "Host": "example.com",
     "Sec-Ch-Ua": '"Chromium";v="131", "Not_A Brand";v="24"',
     "Sec-Ch-Ua-Mobile": "?0",
     "Sec-Ch-Ua-Platform": '"Linux"',
@@ -20,7 +20,7 @@ headers = {
     "Priority": "u=0, i"
 }
 
-base_url = "https://louranhospital.com/?author="
+base_url = "https://example.com/?author="
 
 for i in range(1, 10000):
     url = f"{base_url}{i}"
