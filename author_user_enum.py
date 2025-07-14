@@ -1,10 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
+import sys
 
-url = "https://example.com/?author=2"
+if len(sys.argv) != 2:
+    print(f"Usage: python {sys.argv[0]} <domain>")
+    print(f"Example: python {sys.argv[0]} https://louranhospital.com")
+    sys.exit(1)
+
+domain = sys.argv[1].rstrip("/")
+host_header = domain.replace("https://", "").replace("http://", "")
 
 headers = {
-    "Host": "example.com",
+    "Host": host_header,
     "Sec-Ch-Ua": '"Chromium";v="131", "Not_A Brand";v="24"',
     "Sec-Ch-Ua-Mobile": "?0",
     "Sec-Ch-Ua-Platform": '"Linux"',
@@ -20,22 +27,24 @@ headers = {
     "Priority": "u=0, i"
 }
 
-base_url = "https://example.com/?author="
-
-for i in range(1, 10000):
-    url = f"{base_url}{i}"
-    response = requests.post(url, headers=headers)
-
-    print(f"Trying author={i} - Status: {response.status_code}")
+i = 1
+while True:
+    url = f"{domain}/?author={i}"
+    try:
+        response = requests.post(url, headers=headers, timeout=10)
+    except requests.RequestException as e:
+        print(f"[author={i}] Request failed: {e}")
+        break
 
     if response.status_code == 404:
-        print("404 Not Found. Stopping.")
         break
 
     soup = BeautifulSoup(response.text, 'html.parser')
     meta_tag = soup.find("meta", attrs={"property": "og:title"})
 
-    if meta_tag:
-        print(f"[author={i}] {meta_tag}")
-    else:
-        print(f"[author={i}] No og:title found.")
+    if meta_tag and meta_tag.has_attr("content"):
+        full_title = meta_tag["content"]
+        username = full_title.split(" -")[0].strip()
+        print(username)
+
+    i += 1
